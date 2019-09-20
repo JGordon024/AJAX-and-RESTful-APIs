@@ -17,14 +17,16 @@ if (zip.addEventListener){
 }
 
 function checkInput(){
-    alert("checkInput()");
-// var zip = document.getElementById("zip").value;
-// if(zip.length === 5){
-//     getLocation()
-// }
-// else {
-//     document.getElementById("city").value = "";
-//     document.getElementById("state").value = "";
-// }
+var zip = document.getElementById("zip").value;
+if(zip.length === 5){
+    getLocation()
+}
+else {
+    document.getElementById("city").value = "";
+    document.getElementById("state").value = "";
+}
 }
 
+function getLocation(){
+    console.log("getLocaiton()")
+}

@@ -12,12 +12,11 @@ var entry = "IXIC";
 
 function getRequestObject(){
     try{
-        htptRequest = new XMLHttpRequest()
+        httpRequest = new XMLHttpRequest()
     }
     catch(requestError){
         return false;
     }
-    alert(httpRequest);
     return httpRequest;
 }
 
@@ -28,31 +27,47 @@ if(window.addEventListener){
 }
 
 function stopSubmission(evt){
-    alert("stopSubmission()");
     if(evt.preventDefault){
         evt.preventDefault();
     }else{
         evt.returnValue = false;
     }
+    getQuote();
 }
 
 var form = document.getElementsByTagName("form")[0];
 if(form.addEventListener){
     form.addEventListener("submit", stopSubmission, false);
-    window.addEventListener("load", getRequestObject,false);
+    window.addEventListener("load", getQuote,false);
 }else if( form.attachEvent){
     form.attachEvent("onsubmit",stopSubmission);
-    window.attachEvent("onload",getRequestObject);
+    window.attachEvent("onload",getQuote);
 }
 
 function getQuote(){
-    alert("getQuote()");
     if(document.getElementsByTagName("input")[0].value){
         entry = document.getElementsByTagName("input")[0].value
     }
     if(!httpRequest){
         httpRequest = getRequestObject();
     }
+    httpRequest.abort();
+    httpRequest.open("get", "StockCheck.php?t=" + entry, true);
+    httpRequest.send(null);
+    httpRequest.onreadystatechange = displayData;
 }
 
 
+function displayData() {
+    if (httpRequest.readyState === 4 && httpRequest.status === 200) {
+        var stockResults = httpRequest.responseText;
+        var stockItems = stockResults.split(/,|\"/);
+        for(var i = stockItems.length -1; i >=0; i--){
+            if(stockItems[i]=== ""){
+                stockItems.splice(i,1);
+            }
+        }
+        document.getElementById("ticker").innerHTML = stockItems[0];
+        console.log(stockItems);
+    }
+}
